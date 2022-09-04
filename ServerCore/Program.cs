@@ -4,29 +4,41 @@ namespace ServerCore
 {
     class Program
     {
-        static void MainThread(object state)
+        static int x;
+        static int y;
+        static int r1;
+        static int r2;
+        static void Thread1()
         {
-            Console.WriteLine("1111");
+            y = 1;
+            Thread.MemoryBarrier();
+            r1 = x;
+        }
+        static void Thread2()
+        {
+            x = 1;
+            Thread.MemoryBarrier();
+            r2 = y;
         }
         static void Main()
         {
-            Task t = new Task(() =>
+            int count = 0;
+            while (true)
             {
-                while (true)
+                count++;
+                x = y = r1 = r2 = 0;
+                var t1 = new Task(Thread1);
+                var t2 = new Task(Thread2);
+                t1.Start();
+                t2.Start();
+                Task.WaitAll(t1, t2);
+                if(r1==0&&r2==0)
                 {
-
+                    break;
                 }
-            },TaskCreationOptions.LongRunning);
-            t.Start();
-            //ThreadPool.QueueUserWorkItem(MainThread);
-            /*
-            Thread t = new Thread(MainThread);
-            t.Name = "테스트";
-            t.Start();
-            Console.WriteLine("2222");
-            t.Join();
-            */
-            Console.WriteLine("asdf");
+            }
+           
+            Console.WriteLine(count.ToString());
         }
     }
 }
