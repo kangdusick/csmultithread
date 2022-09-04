@@ -10,7 +10,15 @@ namespace ServerCore
         }
         static void Main()
         {
-            ThreadPool.QueueUserWorkItem(MainThread);
+            Task t = new Task(() =>
+            {
+                while (true)
+                {
+
+                }
+            },TaskCreationOptions.LongRunning);
+            t.Start();
+            //ThreadPool.QueueUserWorkItem(MainThread);
             /*
             Thread t = new Thread(MainThread);
             t.Name = "테스트";
