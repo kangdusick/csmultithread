@@ -42,7 +42,7 @@ namespace ServerCore
         {
             if(args.SocketError == SocketError.Success)
             {
-                _onAcceptHandler?.Invoke(args.AcceptSocket);
+                _onAcceptHandler.Invoke(args.AcceptSocket);
             }
             else
             {
@@ -50,11 +50,6 @@ namespace ServerCore
             }
 
             RegisterAcceept(args);
-        }
-
-        public Socket Accept()
-        {
-            return _listenSocket.Accept();
         }
     }
 }
