@@ -40,6 +40,7 @@ namespace ServerCore
         }
         void OnAcceptCompleted(object sender, SocketAsyncEventArgs args )
         {
+            //async함수: 스레드풀에서 작동하기때문에 멀티스레드임을 인지하고 코딩해야함.
             if(args.SocketError == SocketError.Success)
             {
                 _onAcceptHandler.Invoke(args.AcceptSocket);
