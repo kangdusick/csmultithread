@@ -1,0 +1,15 @@
+C:\Users\xowns\Desktop\csmultithread\practice\bin\Release\net6.0\practice.exe
+C:\Users\xowns\Desktop\csmultithread\practice\bin\Release\net6.0\practice.deps.json
+C:\Users\xowns\Desktop\csmultithread\practice\bin\Release\net6.0\practice.runtimeconfig.json
+C:\Users\xowns\Desktop\csmultithread\practice\bin\Release\net6.0\practice.dll
+C:\Users\xowns\Desktop\csmultithread\practice\bin\Release\net6.0\practice.pdb
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.csproj.AssemblyReference.cache
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.AssemblyInfoInputs.cache
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.AssemblyInfo.cs
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.csproj.CoreCompileInputs.cache
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.dll
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\refint\practice.dll
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.pdb
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\practice.genruntimeconfig.cache
+C:\Users\xowns\Desktop\csmultithread\practice\obj\Release\net6.0\ref\practice.dll
