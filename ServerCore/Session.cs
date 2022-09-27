@@ -14,28 +14,25 @@ namespace ServerCore
 
         object _lock = new object();
         Queue<byte[]> _sendQueue = new();
-        bool _pending = false;
+        List<ArraySegment<byte>> _pendinglist = new List<ArraySegment<byte>>();
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
+        SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
         public Session(Socket socket)
         {
             _socket = socket;
-            SocketAsyncEventArgs recvArgs = new SocketAsyncEventArgs();
-            recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
-            recvArgs.SetBuffer(new byte[1024], 0, 1024);
 
+            _recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
+            _recvArgs.SetBuffer(new byte[1024], 0, 1024);
             _sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
-
-            RegisterRecv(recvArgs);
+            RegisterRecv();
         }
         public void Send(byte[] sendBuff)
         {
             lock (_lock)
             {
                 _sendQueue.Enqueue(sendBuff);
-                if (!_pending)
+                if (_pendinglist.Count==0)
                 {
-
-                    _pending = true;
                     RegisterSend();
                 }
             }
@@ -52,9 +49,12 @@ namespace ServerCore
         #region NetworkCommunication 
         void RegisterSend()
         {
-            var buff = _sendQueue.Dequeue();
-            _sendArgs.SetBuffer(buff,0,buff.Length);
-
+            while (_sendQueue.Count>0)
+            {
+                var buff = _sendQueue.Dequeue();
+                _pendinglist.Add(new ArraySegment<byte>(buff, 0, buff.Length));
+            }
+            _sendArgs.BufferList = _pendinglist;
             bool pending = _socket.SendAsync(_sendArgs);
             if(pending==false)
             {
@@ -69,13 +69,14 @@ namespace ServerCore
                 {
                     try
                     {
-                        if(_sendQueue.Count>0)
+                        _sendArgs.BufferList = null;
+                        _pendinglist.Clear();
+
+                        Console.WriteLine(_sendArgs.BytesTransferred);
+
+                        if (_sendQueue.Count>0)
                         {
                             RegisterSend();
-                        }
-                        else
-                        {
-                            _pending = false;
                         }
                     }
                     catch (Exception e)
@@ -89,12 +90,12 @@ namespace ServerCore
                 }
             }
         }
-        void RegisterRecv(SocketAsyncEventArgs args)
+        void RegisterRecv()
         {
-            bool pending = _socket.ReceiveAsync(args);
+            bool pending = _socket.ReceiveAsync(_recvArgs);
             if (!pending)
             {
-                OnRecvCompleted(null, args);
+                OnRecvCompleted(null, _recvArgs);
             }
 
 
