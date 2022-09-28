@@ -6,31 +6,38 @@ using System.Net;
 using System.Text;
 namespace ServerCore
 {
+    class GameSession : Session
+    {
+        public override void OnConnected(EndPoint endPoint)
+        {
+            Console.WriteLine($"OnConnected : {endPoint}");
+
+            byte[] sendBuff = Encoding.UTF8.GetBytes("Welcome to MMORPG Server!");
+            Send(sendBuff);
+            Thread.Sleep(1000);
+            Disconnect();
+        }
+
+        public override void OnDisconnected(EndPoint endPoint)
+        {
+            Console.WriteLine($"OnDisconnected : {endPoint}");
+        }
+
+        public override void OnRecv(ArraySegment<byte> buffer)
+        {
+            string recvData = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, buffer.Count);
+            Console.WriteLine($"[From Client] {recvData}");
+        }
+
+        public override void OnSend(int numOfBytes)
+        {
+            Console.WriteLine(numOfBytes);
+        }
+    }
 
     class Program
     {
         static Listener _listener;
-        static void OnAcceptHandler(Socket clientSocket)
-        {
-            try
-            {
-                Session session = new Session(clientSocket);
-
-                //보낸다
-                byte[] sendBuff = Encoding.UTF8.GetBytes("Welcome to MMORPG Server!");
-                session.Send(sendBuff);
-
-                Thread.Sleep(1000);
-
-                session.Disconnect();
-                session.Disconnect();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-        }
         static void Main()
         {
             //DNS (Domain name System)
@@ -40,7 +47,8 @@ namespace ServerCore
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
             //문지기
-            _listener = new Listener(endPoint, OnAcceptHandler);
+            _listener = new Listener();
+            _listener.Init(endPoint, () => { return new GameSession(); });
             Console.WriteLine("Listening...");
 
             while (true)

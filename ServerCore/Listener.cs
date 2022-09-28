@@ -10,12 +10,12 @@ namespace ServerCore
     internal class Listener
     {
         Socket _listenSocket;
-        Action<Socket> _onAcceptHandler;
+        Func<Session> _sessionFactory;
 
-        public Listener(IPEndPoint endPoint, Action<Socket> onAcceptHandler)
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory)
         {
             _listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            _onAcceptHandler += onAcceptHandler;
+            _sessionFactory += sessionFactory;
 
             //문지기 교육
             _listenSocket.Bind(endPoint);
@@ -43,7 +43,9 @@ namespace ServerCore
             //async함수: 스레드풀에서 작동하기때문에 멀티스레드임을 인지하고 코딩해야함.
             if(args.SocketError == SocketError.Success)
             {
-                _onAcceptHandler.Invoke(args.AcceptSocket);
+                Session session = _sessionFactory.Invoke();
+                session.Start(args.AcceptSocket);
+                session.OnConnected(args.AcceptSocket.RemoteEndPoint);
             }
             else
             {
