@@ -11,3 +11,8 @@ C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\Server.dll
 C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\refint\Server.dll
 C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\Server.pdb
 C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\Server.genruntimeconfig.cache
+C:\Users\xowns\Desktop\csmultithread\Server\bin\Debug\net6.0\Server.pdb
+C:\Users\xowns\Desktop\csmultithread\Server\bin\Debug\net6.0\ServerCore.dll
+C:\Users\xowns\Desktop\csmultithread\Server\bin\Debug\net6.0\ServerCore.pdb
+C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\Server.csproj.CopyComplete
+C:\Users\xowns\Desktop\csmultithread\Server\obj\Debug\net6.0\ref\Server.dll
