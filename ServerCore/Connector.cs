@@ -26,20 +26,20 @@ namespace ServerCore
         void RegisterConnect(SocketAsyncEventArgs args)
         {
             var socket = args.UserToken as Socket;
-            if(socket == null)
+            if (socket == null)
             {
                 return;
             }
             bool pending = socket.ConnectAsync(args);
-            if(pending == false)
+            if (pending == false)
             {
-                OnConnectCompleted(null,args);
+                OnConnectCompleted(null, args);
             }
         }
 
         void OnConnectCompleted(object sender, SocketAsyncEventArgs args)
         {
-            if(args.SocketError == SocketError.Success)
+            if (args.SocketError == SocketError.Success)
             {
                 Session session = _sessionFactory.Invoke();
                 session.Start(args.ConnectSocket);

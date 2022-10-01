@@ -27,19 +27,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\xowns\\.nuget\\packages\\": {}
+    "C:\\Users\\donggeul\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\xowns\\Desktop\\csmultithread\\DummyClient\\DummyClient.csproj",
+      "projectUniqueName": "C:\\Users\\donggeul\\Desktop\\csmultithread\\DummyClient\\DummyClient.csproj",
       "projectName": "DummyClient",
-      "projectPath": "C:\\Users\\xowns\\Desktop\\csmultithread\\DummyClient\\DummyClient.csproj",
-      "packagesPath": "C:\\Users\\xowns\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\xowns\\Desktop\\csmultithread\\DummyClient\\obj\\",
+      "projectPath": "C:\\Users\\donggeul\\Desktop\\csmultithread\\DummyClient\\DummyClient.csproj",
+      "packagesPath": "C:\\Users\\donggeul\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\donggeul\\Desktop\\csmultithread\\DummyClient\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\xowns\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\donggeul\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -53,8 +53,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\xowns\\Desktop\\csmultithread\\ServerCore\\ServerCore.csproj": {
-              "projectPath": "C:\\Users\\xowns\\Desktop\\csmultithread\\ServerCore\\ServerCore.csproj"
+            "C:\\Users\\donggeul\\Desktop\\csmultithread\\ServerCore\\ServerCore.csproj": {
+              "projectPath": "C:\\Users\\donggeul\\Desktop\\csmultithread\\ServerCore\\ServerCore.csproj"
             }
           }
         }
@@ -74,7 +74,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -83,7 +84,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }

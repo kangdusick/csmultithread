@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\DummyClient",
+    "\\Server",
     "\\ServerCore"
   ],
-  "SelectedNode": "\\ServerCore\\ServerCore.csproj",
+  "SelectedNode": "\\ServerCore\\RecvBuffer.cs",
   "PreviewInSolutionExplorer": false
 }
