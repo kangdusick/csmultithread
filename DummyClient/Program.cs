@@ -1,8 +1,6 @@
-﻿using System;
+﻿using ServerCore;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using ServerCore;
 
 namespace DummyClient
 {
@@ -55,6 +53,7 @@ namespace DummyClient
 
         static void Main()
         {
+            Console.WriteLine("더미 클라이언트 입니다.");
             //DNS (Domain name System)
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);

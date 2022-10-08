@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net.Sockets;
+﻿using ServerCore;
 using System.Net;
-using System.Text;
-using ServerCore;
 
 namespace Server
 {
@@ -40,7 +35,7 @@ namespace Server
         }
         public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
-            ushort size = BitConverter.ToUInt16(buffer.Array,buffer.Offset);
+            ushort size = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
             ushort id = BitConverter.ToUInt16(buffer.Array, buffer.Offset + 2);
             Console.WriteLine($"RecvPacketid: {id}, Size: {size}");
         }
@@ -59,6 +54,7 @@ namespace Server
         static Listener _listener;
         static void Main()
         {
+            Console.WriteLine("Server.cs입니다.");
             //DNS (Domain name System)
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);

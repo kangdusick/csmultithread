@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServerCore
+﻿namespace ServerCore
 {
     public class RecvBuffer
     {
@@ -34,14 +28,14 @@ namespace ServerCore
             }
             else
             {
-                Array.Copy(_buffer.Array,_buffer.Offset+_readPos,_buffer.Array,_buffer.Offset,dataSize);
+                Array.Copy(_buffer.Array, _buffer.Offset + _readPos, _buffer.Array, _buffer.Offset, dataSize);
                 _readPos = 0;
                 _writePos = dataSize;
             }
         }
         public bool OnRead(int numOfBytes)
         {
-            if(numOfBytes>DataSize)
+            if (numOfBytes > DataSize)
             {
                 return false;
             }
