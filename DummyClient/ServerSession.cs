@@ -33,21 +33,29 @@ namespace DummyClient
             {
                 size = 4,
                 packetId = (ushort)PacketID.PlayerInfoReq,
-                playerID = 1
+                playerID = 1001
             };
 
             //보낸다
             {
-                ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
-                byte[] size = BitConverter.GetBytes(packet.size);
-                byte[] packetID = BitConverter.GetBytes(packet.packetId);
-                byte[] playerID = BitConverter.GetBytes(packet.playerID);
+                ArraySegment<byte> s = SendBufferHelper.Open(4096);
 
-                Array.Copy(size, 0, openSegment.Array, openSegment.Offset, size.Length);
-                Array.Copy(packetID, 0, openSegment.Array, openSegment.Offset + size.Length, packetID.Length);
-                ArraySegment<byte> sendBuff = SendBufferHelper.Close(packet.size);
+                ushort count = 0;
+                bool success = true;
 
-                Send(sendBuff);
+                count += 2;
+                success &= BitConverter.TryWriteBytes(new Span<byte>(s.Array, s.Offset + count, s.Count - count), packet.packetId);
+                count += 2;
+                success &= BitConverter.TryWriteBytes(new Span<byte>(s.Array, s.Offset + count, s.Count - count), packet.playerID);
+                count += 8;
+                success &= BitConverter.TryWriteBytes(new Span<byte>(s.Array, s.Offset, s.Count), count);
+
+                ArraySegment<byte> sendBuff = SendBufferHelper.Close(count);
+
+                if (success)
+                {
+                    Send(sendBuff);
+                }
             }
         }
 
