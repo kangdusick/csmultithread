@@ -1,5 +1,6 @@
 ﻿using ServerCore;
 using System.Net;
+using System.Text;
 
 namespace Server
 {
@@ -14,6 +15,7 @@ namespace Server
     class PlayerInfoReq : Packet
     {
         public long playerId;
+        public string name;
         public PlayerInfoReq()
         {
             this.packetId = (ushort)PacketID.PlayerInfoReq;
@@ -30,6 +32,12 @@ namespace Server
             count += sizeof(ushort);
             this.playerId = BitConverter.ToInt64(s.Slice(count, s.Length - count));
             count += sizeof(long);
+
+            ushort nameLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+            count += sizeof(ushort);
+            this.name = Encoding.Unicode.GetString(s.Slice(count, nameLen));
+            count += nameLen;
+
         }
 
         public override ArraySegment<byte> Write()
@@ -46,8 +54,14 @@ namespace Server
             count += sizeof(ushort);
             success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), this.playerId);
             count += sizeof(long);
-            success &= BitConverter.TryWriteBytes(s, count);
 
+            ushort nameLen = (ushort)Encoding.Unicode.GetByteCount(name);
+            success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
+            count += sizeof(ushort);
+            Array.Copy(Encoding.Unicode.GetBytes(this.name), 0, segment.Array, count, nameLen);
+            count += nameLen;
+
+            success &= BitConverter.TryWriteBytes(s, count);
             if (!success)
             {
                 return null;
@@ -99,7 +113,7 @@ namespace Server
                 case PacketID.PlayerInfoReq:
                     PlayerInfoReq p = new PlayerInfoReq();
                     p.Read(buffer);
-                    Console.WriteLine($"PlayerInfoReq: {p.playerId}");
+                    Console.WriteLine($"PlayerInfoReq: {p.playerId} name: {p.name}");
                     break;
                 case PacketID.PlayerInfoOk:
                     break;

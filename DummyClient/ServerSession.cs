@@ -32,6 +32,12 @@ namespace DummyClient
             count += sizeof(ushort);
             this.playerId = BitConverter.ToInt64(s.Slice(count, s.Length - count));
             count += sizeof(long);
+
+            ushort nameLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+            count += sizeof(ushort);
+            this.name = Encoding.Unicode.GetString(s.Slice(count, nameLen));
+            count += nameLen;
+
         }
 
         public override ArraySegment<byte> Write()
@@ -48,13 +54,19 @@ namespace DummyClient
             count += sizeof(ushort);
             success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), this.playerId);
             count += sizeof(long);
-            success &= BitConverter.TryWriteBytes(s, count);
 
-            ushort nameLen = (ushort)Encoding.Unicode.GetByteCount(name);
+            //ushort nameLen = (ushort)Encoding.Unicode.GetByteCount(name);
+            //success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
+            //count += sizeof(ushort);
+            // Array.Copy(Encoding.Unicode.GetBytes(this.name), 0, segment.Array, count, nameLen);
+            //count += nameLen;
+
+            ushort nameLen = (ushort)Encoding.Unicode.GetBytes(this.name, 0, this.name.Length, segment.Array, segment.Offset + count + sizeof(ushort));
             success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), nameLen);
             count += sizeof(ushort);
-            Array.Copy(Encoding.Unicode.GetBytes(this.name), 0, segment.Array, count, nameLen);
+            count += nameLen;
 
+            success &= BitConverter.TryWriteBytes(s, count);
             if (!success)
             {
                 return null;
@@ -74,7 +86,7 @@ namespace DummyClient
         {
             Console.WriteLine($"OnConnected : {endPoint}");
 
-            PlayerInfoReq packet = new PlayerInfoReq() { playerId = 1001, name = "ABCD" };
+            PlayerInfoReq packet = new PlayerInfoReq() { playerId = 1001, name = "강두식ㅁㄴㅇ" };
 
             //보낸다
             {
