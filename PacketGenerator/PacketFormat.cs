@@ -1,4 +1,8 @@
-﻿namespace PacketGenerator
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PacketGenerator
 {
 	class PacketFormat
 	{
