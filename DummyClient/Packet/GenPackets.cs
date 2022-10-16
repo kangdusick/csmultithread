@@ -1,14 +1,13 @@
+using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Net;
-using ServerCore;
 
 public enum PacketID
 {
 	C_PlayerInfoReq = 1,
 	S_Test = 2,
-	
+
 }
 
 interface IPacket
@@ -32,23 +31,23 @@ class C_PlayerInfoReq : IPacket
 		public class Attribute
 		{
 			public int att;
-		
+
 			public void Read(ReadOnlySpan<byte> s, ref ushort count)
 			{
 				this.att = BitConverter.ToInt32(s.Slice(count, s.Length - count));
 				count += sizeof(int);
 			}
-		
+
 			public bool Write(Span<byte> s, ref ushort count)
 			{
 				bool success = true;
 				success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), this.att);
 				count += sizeof(int);
 				return success;
-			}	
+			}
 		}
 		public List<Attribute> attributes = new List<Attribute>();
-	
+
 		public void Read(ReadOnlySpan<byte> s, ref ushort count)
 		{
 			this.id = BitConverter.ToInt32(s.Slice(count, s.Length - count));
@@ -67,7 +66,7 @@ class C_PlayerInfoReq : IPacket
 				attributes.Add(attribute);
 			}
 		}
-	
+
 		public bool Write(Span<byte> s, ref ushort count)
 		{
 			bool success = true;
@@ -82,7 +81,7 @@ class C_PlayerInfoReq : IPacket
 			foreach (Attribute attribute in this.attributes)
 				success &= attribute.Write(s, ref count);
 			return success;
-		}	
+		}
 	}
 	public List<Skill> skills = new List<Skill>();
 

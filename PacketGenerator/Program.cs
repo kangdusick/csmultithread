@@ -41,7 +41,7 @@ namespace PacketGenerator
 				File.WriteAllText("GenPackets.cs", fileText);
 				string clientManagerText = string.Format(PacketFormat.managerFormat, clientRegister);
 				File.WriteAllText("ClientPacketManager.cs", clientManagerText);
-				string serverManagerText = string.Format(PacketFormat.managerFormat,serverRegister);
+				string serverManagerText = string.Format(PacketFormat.managerFormat, serverRegister);
 				File.WriteAllText("ServerPacketManager.cs", serverManagerText);
 			}
 		}
@@ -55,7 +55,7 @@ namespace PacketGenerator
 			{
 				Console.WriteLine("Invalid packet node");
 				return;
-			}	
+			}
 
 			string packetName = r["name"];
 			if (string.IsNullOrEmpty(packetName))
@@ -67,7 +67,7 @@ namespace PacketGenerator
 			Tuple<string, string, string> t = ParseMembers(r);
 			genPackets += string.Format(PacketFormat.packetFormat, packetName, t.Item1, t.Item2, t.Item3);
 			packetEnums += string.Format(PacketFormat.packetEnumFormat, packetName, ++packetId) + Environment.NewLine + "\t";
-			
+
 			if (packetName.StartsWith("S_") || packetName.StartsWith("s_"))
 				clientRegister += string.Format(PacketFormat.managerRegisterFormat, packetName) + Environment.NewLine;
 			else
@@ -146,7 +146,7 @@ namespace PacketGenerator
 			writeCode = writeCode.Replace("\n", "\n\t\t");
 			return new Tuple<string, string, string>(memberCode, readCode, writeCode);
 		}
-		
+
 		public static Tuple<string, string, string> ParseList(XmlReader r)
 		{
 			string listName = r["name"];
