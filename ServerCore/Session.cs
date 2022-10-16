@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
 namespace ServerCore
@@ -14,6 +15,7 @@ namespace ServerCore
 		public sealed override int OnRecv(ArraySegment<byte> buffer)
 		{
 			int processLen = 0;
+			int packetCount = 0;
 
 			while (true)
 			{
@@ -28,10 +30,14 @@ namespace ServerCore
 
 				// 여기까지 왔으면 패킷 조립 가능
 				OnRecvPacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+				packetCount++;
 
 				processLen += dataSize;
 				buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
 			}
+
+			if (packetCount > 1)
+				Console.WriteLine($"패킷 모아보내기 : {packetCount}");
 
 			return processLen;
 		}
@@ -44,7 +50,7 @@ namespace ServerCore
 		Socket _socket;
 		int _disconnected = 0;
 
-		RecvBuffer _recvBuffer = new RecvBuffer(1024);
+		RecvBuffer _recvBuffer = new RecvBuffer(65535);
 
 		object _lock = new object();
 		Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
@@ -53,17 +59,19 @@ namespace ServerCore
 		SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
 		public abstract void OnConnected(EndPoint endPoint);
-		public abstract int OnRecv(ArraySegment<byte> buffer);
+		public abstract int  OnRecv(ArraySegment<byte> buffer);
 		public abstract void OnSend(int numOfBytes);
 		public abstract void OnDisconnected(EndPoint endPoint);
+
 		void Clear()
 		{
-			lock(_lock)
+			lock (_lock)
 			{
 				_sendQueue.Clear();
 				_pendingList.Clear();
 			}
 		}
+
 		public void Start(Socket socket)
 		{
 			_socket = socket;
@@ -72,6 +80,21 @@ namespace ServerCore
 			_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
 			RegisterRecv();
+		}
+
+		public void Send(List<ArraySegment<byte>> sendBuffList)
+		{
+			if (sendBuffList.Count == 0)
+				return;
+
+			lock (_lock)
+			{
+				foreach (ArraySegment<byte> sendBuff in sendBuffList)
+					_sendQueue.Enqueue(sendBuff);
+
+				if (_pendingList.Count == 0)
+					RegisterSend();
+			}
 		}
 
 		public void Send(ArraySegment<byte> sendBuff)
@@ -92,7 +115,6 @@ namespace ServerCore
 			OnDisconnected(_socket.RemoteEndPoint);
 			_socket.Shutdown(SocketShutdown.Both);
 			_socket.Close();
-			
 			Clear();
 		}
 
@@ -101,9 +123,8 @@ namespace ServerCore
 		void RegisterSend()
 		{
 			if (_disconnected == 1)
-			{
 				return;
-			}
+
 			while (_sendQueue.Count > 0)
 			{
 				ArraySegment<byte> buff = _sendQueue.Dequeue();
@@ -116,13 +137,11 @@ namespace ServerCore
 				bool pending = _socket.SendAsync(_sendArgs);
 				if (pending == false)
 					OnSendCompleted(null, _sendArgs);
-
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"RegisterSendFailed: {e}");
+				Console.WriteLine($"RegisterSend Failed {e}");
 			}
-
 		}
 
 		void OnSendCompleted(object sender, SocketAsyncEventArgs args)
@@ -155,23 +174,22 @@ namespace ServerCore
 
 		void RegisterRecv()
 		{
-			if(_disconnected==1)
-			{
+			if (_disconnected == 1)
 				return;
-			}
+
 			_recvBuffer.Clean();
 			ArraySegment<byte> segment = _recvBuffer.WriteSegment;
 			_recvArgs.SetBuffer(segment.Array, segment.Offset, segment.Count);
 
 			try
 			{
-			bool pending = _socket.ReceiveAsync(_recvArgs);
-			if (pending == false)
-				OnRecvCompleted(null, _recvArgs);
+				bool pending = _socket.ReceiveAsync(_recvArgs);
+				if (pending == false)
+					OnRecvCompleted(null, _recvArgs);
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"RegisterRecvFail {e}");
+				Console.WriteLine($"RegisterRecv Failed {e}");
 			}
 		}
 
