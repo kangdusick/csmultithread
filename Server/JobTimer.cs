@@ -3,6 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using ServerCore;
 
+public static class TimeManager
+{
+	private static int _initTick;
+	public static void InitTimeManager()
+	{
+		_initTick = Environment.TickCount;
+	}
+	public static int GetTimeElapseMilliSce()
+	{
+		return Environment.TickCount - _initTick;
+	}
+}
+
 namespace Server
 {
 	struct JobTimerElem : IComparable<JobTimerElem>
@@ -26,7 +39,7 @@ namespace Server
 		public void Push(Action action, int tickAfter = 0)
 		{
 			JobTimerElem job;
-			job.execTick = System.Environment.TickCount + tickAfter;
+			job.execTick = TimeManager.GetTimeElapseMilliSce() + tickAfter;
 			job.action = action;
 
 			lock (_lock)
@@ -39,8 +52,8 @@ namespace Server
 		{
 			while (true)
 			{
-				int now = System.Environment.TickCount;
-
+				int now = TimeManager.GetTimeElapseMilliSce();
+				Console.WriteLine(now);
 				JobTimerElem job;
 
 				lock (_lock)

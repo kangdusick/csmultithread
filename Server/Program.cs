@@ -22,6 +22,7 @@ namespace Server
 
 		static void Main(string[] args)
 		{
+			TimeManager.InitTimeManager();
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
